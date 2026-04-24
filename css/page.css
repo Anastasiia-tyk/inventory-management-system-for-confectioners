@@ -1,0 +1,30 @@
+.page {
+    display: none;
+    animation: fadeIn .35s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+.page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--beige-200);
+}
+
+.page-header h2 {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    color: var(--choco-700);
+}
+
+.page-header p {
+    font-size: .88rem;
+    color: var(--choco-400);
+    margin-top: .3rem;
+}

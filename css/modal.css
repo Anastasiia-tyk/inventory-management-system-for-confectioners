@@ -1,0 +1,130 @@
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(38, 20, 8, .5);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal {
+    background: var(--cream);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(20px) scale(.97);
+    transition: transform .3s ease;
+}
+
+.modal-overlay.open .modal {
+    transform: none;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--beige-200);
+}
+
+.modal-header h3 {
+    color: var(--choco-700);
+}
+
+.modal-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--beige-100);
+    border-radius: 50%;
+    font-size: 1rem;
+    color: var(--choco-400);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.modal-close:hover {
+    background: var(--beige-200);
+    color: var(--choco-700);
+}
+
+/* Recipe builder */
+.recipe-builder {
+    margin-top: .5rem;
+}
+
+.recipe-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: .5rem;
+    margin-bottom: .5rem;
+    align-items: center;
+}
+
+.recipe-row input,
+.recipe-row select {
+    padding: .55rem .8rem;
+    border: 1.5px solid var(--beige-200);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: .88rem;
+    background: var(--beige-50);
+    color: var(--choco-700);
+    outline: none;
+}
+
+.recipe-row input:focus,
+.recipe-row select:focus {
+    border-color: var(--gold-400);
+}
+
+.add-recipe-row {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .5rem;
+    background: var(--beige-50);
+    border: 1.5px dashed var(--beige-300);
+    border-radius: var(--radius-sm);
+    font-size: .85rem;
+    color: var(--choco-400);
+    cursor: pointer;
+    transition: var(--transition);
+    width: 100%;
+    margin-top: .4rem;
+}
+
+.add-recipe-row:hover {
+    border-color: var(--choco-400);
+    color: var(--choco-600);
+    background: var(--beige-100);
+}
+
+.modal-footer {
+    display: flex;
+    gap: .6rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--beige-200);
+}

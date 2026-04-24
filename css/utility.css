@@ -1,0 +1,29 @@
+.flex {
+    display: flex;
+}
+
+.gap-sm {
+    gap: .5rem;
+}
+
+.gap-md {
+    gap: 1rem;
+}
+
+.mt-1 {
+    margin-top: 1rem;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.divider {
+    height: 1px;
+    background: var(--beige-200);
+    margin: 1rem 0;
+}
+
+/* input[type=number] {
+    -moz-appearance: textfield;
+} */

@@ -1,0 +1,192 @@
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.product-card {
+    background: var(--cream);
+    border: 1px solid var(--beige-200);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    animation: fadeUp .4s ease both;
+}
+
+.product-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--beige-300);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--beige-100), var(--beige-200));
+    padding: 1.2rem 1.4rem .9rem;
+    border-bottom: 1px solid var(--beige-200);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: .5rem;
+}
+
+.card-header h3 {
+    font-size: 1.2rem;
+    color: var(--choco-700);
+}
+
+.card-header .card-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.card-body {
+    padding: 1.2rem 1.4rem;
+}
+
+.recipe-list {
+    list-style: none;
+    margin-bottom: 1rem;
+}
+
+.recipe-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .35rem 0;
+    border-bottom: 1px dashed var(--beige-200);
+    font-size: .85rem;
+}
+
+.recipe-list li:last-child {
+    border-bottom: none;
+}
+
+.recipe-list .ing-name {
+    color: var(--choco-500);
+}
+
+.recipe-list .ing-qty {
+    font-weight: 600;
+    color: var(--choco-700);
+    background: var(--beige-100);
+    padding: .1rem .5rem;
+    border-radius: 999px;
+    font-size: .78rem;
+}
+
+.counter-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--beige-50);
+    border: 1px solid var(--beige-200);
+    border-radius: var(--radius-sm);
+    padding: .6rem 1rem;
+    margin-top: .8rem;
+}
+
+.counter-label {
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--choco-400);
+}
+
+.counter-controls {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.counter-btn {
+    width: 30px;
+    height: 30px;
+    border: 1.5px solid var(--beige-300);
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--choco-600);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.counter-btn:hover {
+    background: var(--beige-200);
+    border-color: var(--choco-400);
+}
+
+.counter-value {
+    width: 48px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--choco-700);
+    font-family: var(--font-display);
+    border: none;
+    background: transparent;
+    outline: none;
+}
+
+/* Remove number input arrows */
+.counter-value::-webkit-outer-spin-button,
+.counter-value::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.card-footer {
+    padding: .8rem 1.4rem;
+    border-top: 1px solid var(--beige-200);
+    display: flex;
+    gap: .5rem;
+    justify-content: flex-end;
+}
+
+.day-summary-bar {
+    background: linear-gradient(135deg, var(--choco-600), var(--choco-700));
+    border-radius: var(--radius-lg);
+    padding: 1.2rem 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.day-summary-bar h3 {
+    color: var(--beige-100);
+    font-size: 1.1rem;
+}
+
+.day-summary-bar p {
+    color: var(--beige-300);
+    font-size: .85rem;
+    margin-top: .2rem;
+}
+
+.confirm-btn {
+    padding: .75rem 2rem;
+    background: linear-gradient(135deg, var(--gold-400), var(--gold-300));
+    color: var(--choco-800);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: .9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px rgba(224, 168, 48, .4);
+    white-space: nowrap;
+}
+
+.confirm-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(224, 168, 48, .5);
+}

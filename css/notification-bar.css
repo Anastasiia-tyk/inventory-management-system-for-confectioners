@@ -1,0 +1,35 @@
+.notif-bar {
+    display: flex;
+    gap: .6rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.notif {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .55rem 1rem;
+    background: linear-gradient(135deg, rgba(224, 168, 48, .15), rgba(224, 168, 48, .08));
+    border: 1px solid rgba(224, 168, 48, .4);
+    border-radius: var(--radius-sm);
+    font-size: .82rem;
+    color: var(--choco-600);
+    animation: pulse 2s ease infinite;
+}
+
+.notif::before {
+    content: '⚠️';
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(224, 168, 48, .3);
+    }
+
+    50% {
+        box-shadow: 0 0 0 4px rgba(224, 168, 48, .1);
+    }
+}
