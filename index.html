@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Патисьє — ІС контролю запасів</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <!-- ═══════════════ AUTH SCREEN ═══════════════ -->
+    <div id="auth-screen">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <div class="logo-mark">🍰</div>
+          <h1>Патисьє</h1>
+          <p>Контроль запасів кондитерської</p>
+        </div>
+
+        <div class="auth-tabs">
+          <button
+            class="auth-tab active"
+            onclick="window.app.switchAuthTab('login')"
+          >
+            Увійти
+          </button>
+          <button
+            class="auth-tab"
+            onclick="window.app.switchAuthTab('register')"
+          >
+            Реєстрація
+          </button>
+        </div>
+
+        <!-- Login form -->
+        <div id="login-form">
+          <div class="field">
+            <label>Email</label>
+            <input type="email" id="login-email" placeholder="your@email.com" />
+          </div>
+          <div class="field">
+            <label>Пароль</label>
+            <input type="password" id="login-password" placeholder="••••••••" />
+          </div>
+          <button class="btn-primary" onclick="window.app.login()">
+            Увійти в систему
+          </button>
+          <p
+            style="
+              text-align: center;
+              font-size: 0.8rem;
+              color: var(--choco-400);
+              margin-top: 1rem;
+            "
+          >
+            Демо: manager@test.com / 123456
+          </p>
+        </div>
+
+        <!-- Register form -->
+        <div id="register-form" class="hidden">
+          <div class="field">
+            <label>Ім'я</label>
+            <input type="text" id="reg-name" placeholder="Ваше ім'я" />
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" id="reg-email" placeholder="your@email.com" />
+          </div>
+          <div class="field">
+            <label>Пароль</label>
+            <input
+              type="password"
+              id="reg-password"
+              placeholder="Мінімум 6 символів"
+            />
+          </div>
+          <div class="field">
+            <label>Роль</label>
+            <select id="reg-role">
+              <option value="manager">Менеджер</option>
+              <option value="chef">Шеф-кондитер</option>
+            </select>
+          </div>
+          <button class="btn-primary" onclick="window.app.register()">
+            Зареєструватись
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ APP ═══════════════ -->
+    <div id="app">
+      <!-- Topbar -->
+      <header class="topbar">
+        <a class="topbar-logo" href="#">
+          <div class="mark">🍰</div>
+          <span>Патисьє</span>
+        </a>
+        <nav class="topbar-nav">
+          <button
+            class="nav-btn active"
+            onclick="window.app.showPage('products')"
+            id="nav-products"
+          >
+            <span class="nav-icon">🎂</span><span>Продукти</span>
+          </button>
+          <button
+            class="nav-btn"
+            onclick="window.app.showPage('inventory')"
+            id="nav-inventory"
+          >
+            <span class="nav-icon">📦</span><span>Склад</span>
+            <span class="badge hidden" id="low-badge">0</span>
+          </button>
+          <button
+            class="nav-btn"
+            onclick="window.app.showPage('forecast')"
+            id="nav-forecast"
+          >
+            <span class="nav-icon">📈</span><span>Прогноз</span>
+          </button>
+          <button
+            class="nav-btn"
+            onclick="window.app.showPage('stats')"
+            id="nav-stats"
+          >
+            <span class="nav-icon">📊</span><span>Статистика</span>
+          </button>
+        </nav>
+        <div class="topbar-right">
+          <div class="user-chip">
+            <div class="user-avatar" id="user-avatar">МА</div>
+            <span id="user-name-display">Менеджер</span>
+          </div>
+          <button class="btn-logout" onclick="window.app.logout()">
+            Вийти
+          </button>
+        </div>
+      </header>
+
+      <main class="main">
+        <!-- ── PRODUCTS PAGE ── -->
+        <div class="page active" id="page-products">
+          <div class="page-header">
+            <div>
+              <h2>🎂 Продукти</h2>
+              <p>Картотека виробів та щоденний облік виробництва</p>
+            </div>
+            <button class="btn-gold" onclick="window.app.openProductModal()">
+              + Додати продукт
+            </button>
+          </div>
+
+          <!-- Notification bar -->
+          <div class="notif-bar" id="notif-bar"></div>
+
+          <!-- Day summary -->
+          <div class="day-summary-bar" id="day-summary-bar">
+            <div>
+              <h3 id="today-label">Сьогодні: — виробів</h3>
+              <p id="today-date"></p>
+            </div>
+            <button class="confirm-btn" onclick="window.app.confirmDay()">
+              ✓ Підтвердити виробництво за день
+            </button>
+          </div>
+
+          <div class="products-grid" id="products-grid">
+            <div class="empty-state">
+              <div class="empty-icon">🍰</div>
+              <h3>Поки немає продуктів</h3>
+              <p>Додайте перший продукт, щоб розпочати</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── INVENTORY PAGE ── -->
+        <div class="page" id="page-inventory">
+          <div class="page-header">
+            <div>
+              <h2>📦 Склад інгредієнтів</h2>
+              <p>Поточні залишки та журнал витрат</p>
+            </div>
+            <button class="btn-gold" onclick="window.app.openIngModal()">
+              + Додати інгредієнт
+            </button>
+          </div>
+
+          <div class="inv-stats" id="inv-stats-cards"></div>
+
+          <div class="inv-actions-row">
+            <h3 style="font-size: 1rem; color: var(--choco-600)">
+              Залишки інгредієнтів
+            </h3>
+            <div class="flex gap-sm">
+              <button
+                class="btn-secondary"
+                onclick="window.app.openRestockModal()"
+              >
+                📥 Поповнення партії
+              </button>
+            </div>
+          </div>
+
+          <div class="inv-table-wrap">
+            <table class="inv-table">
+              <thead>
+                <tr>
+                  <th>Інгредієнт</th>
+                  <th>Залишок</th>
+                  <th>Мін. поріг</th>
+                  <th>Рівень</th>
+                  <th>Витрачено сьогодні</th>
+                  <th>Статус</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="inv-tbody"></tbody>
+            </table>
+          </div>
+
+          <!-- Log section -->
+          <div style="margin-top: 2rem">
+            <h3
+              style="
+                font-size: 1.1rem;
+                color: var(--choco-600);
+                margin-bottom: 1rem;
+              "
+            >
+              📋 Журнал змін складу
+              <span
+                style="
+                  font-size: 0.8rem;
+                  font-weight: 400;
+                  color: var(--choco-400);
+                "
+                >(останні 20)</span
+              >
+            </h3>
+            <div class="inv-table-wrap">
+              <table class="inv-table">
+                <thead>
+                  <tr>
+                    <th>Дата</th>
+                    <th>Інгредієнт</th>
+                    <th>Тип</th>
+                    <th>Зміна</th>
+                    <th>Залишок після</th>
+                  </tr>
+                </thead>
+                <tbody id="log-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── FORECAST PAGE ── -->
+        <div class="page" id="page-forecast">
+          <div class="forecast-hero">
+            <div>
+              <h2>📈 Прогноз закупівель</h2>
+              <p>Рекомендації на основі статистики виробництва</p>
+              <div class="forecast-info">
+                <div class="info-pill">
+                  📅 <span id="forecast-days-info">Горизонт: 7 днів</span>
+                </div>
+                <div class="info-pill">
+                  🔬 <span id="data-days-info">Дані: —</span>
+                </div>
+                <div class="info-pill">
+                  ⚡ <span id="accuracy-info">Точність: базова</span>
+                </div>
+              </div>
+            </div>
+            <div class="horizon-select">
+              <button
+                class="horizon-btn active"
+                onclick="window.app.setHorizon(7, this)"
+              >
+                7 днів
+              </button>
+              <button
+                class="horizon-btn"
+                onclick="window.app.setHorizon(14, this)"
+              >
+                14 днів
+              </button>
+              <button
+                class="horizon-btn"
+                onclick="window.app.setHorizon(30, this)"
+              >
+                30 днів
+              </button>
+            </div>
+          </div>
+          <div class="forecast-cards" id="forecast-cards"></div>
+        </div>
+
+        <!-- ── STATS PAGE ── -->
+        <div class="page" id="page-stats">
+          <div class="page-header">
+            <div>
+              <h2>📊 Статистика</h2>
+              <p>Аналітика виробництва, витрат та закупівель</p>
+            </div>
+            <select
+              id="stats-range"
+              onchange="renderStats()"
+              style="
+                padding: 0.5rem 0.8rem;
+                border: 1.5px solid var(--beige-200);
+                border-radius: var(--radius-sm);
+                font-family: var(--font-body);
+                background: var(--cream);
+                color: var(--choco-600);
+                font-size: 0.85rem;
+                cursor: pointer;
+                outline: none;
+              "
+            >
+              <option value="7">Останні 7 днів</option>
+              <option value="30" selected>Останні 30 днів</option>
+              <option value="90">Останні 90 днів</option>
+            </select>
+          </div>
+          <div class="stats-grid">
+            <div class="chart-card">
+              <div class="chart-title">Рейтинг продуктів</div>
+              <div class="chart-subtitle">
+                Кількість виробленого за обраний період
+              </div>
+              <div class="chart-wrap">
+                <canvas id="chart-products"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title">Витрати інгредієнтів</div>
+              <div class="chart-subtitle">Топ-5 за витратою</div>
+              <div class="chart-wrap">
+                <canvas id="chart-consumption"></canvas>
+              </div>
+            </div>
+            <div class="chart-card wide">
+              <div class="chart-title">Динаміка виробництва</div>
+              <div class="chart-subtitle">
+                Загальна кількість виробів по днях
+              </div>
+              <div class="chart-wrap tall">
+                <canvas id="chart-daily"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title">Поповнення складу</div>
+              <div class="chart-subtitle">Закупівлі інгредієнтів</div>
+              <div class="chart-wrap">
+                <canvas id="chart-purchases"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title">Стан складу</div>
+              <div class="chart-subtitle">Залишки відносно мінімуму</div>
+              <div class="chart-wrap"><canvas id="chart-stock"></canvas></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- ═══ MODALS ═══ -->
+
+    <!-- Product modal -->
+    <div class="modal-overlay" id="product-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="product-modal-title">Новий продукт</h3>
+          <button
+            class="modal-close"
+            onclick="window.app.closeModal('product-modal')"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="field">
+          <label>Назва продукту</label>
+          <input type="text" id="pm-name" placeholder="Торт Наполеон" />
+        </div>
+        <div class="field">
+          <label>Іконка</label>
+          <select id="pm-icon">
+            <option value="🎂">🎂 Торт</option>
+            <option value="🧁">🧁 Кекс</option>
+            <option value="🍰">🍰 Тістечко</option>
+            <option value="🍩">🍩 Пончик</option>
+            <option value="🍪">🍪 Печиво</option>
+            <option value="🥐">🥐 Круасан</option>
+            <option value="🍫">🍫 Шоколадне</option>
+            <option value="🧇">🧇 Вафлі</option>
+            <option value="🥮">🥮 Рулет</option>
+          </select>
+        </div>
+        <div class="field">
+          <label
+            >Рецептурна картка
+            <span style="color: var(--choco-400); font-weight: 400"
+              >(на 1 одиницю)</span
+            ></label
+          >
+          <div class="recipe-builder" id="recipe-builder">
+            <div class="recipe-row" style="margin-bottom: 0.4rem">
+              <span
+                style="
+                  font-size: 0.75rem;
+                  font-weight: 600;
+                  letter-spacing: 0.08em;
+                  text-transform: uppercase;
+                  color: var(--choco-400);
+                "
+                >Інгредієнт</span
+              >
+              <span
+                style="
+                  font-size: 0.75rem;
+                  font-weight: 600;
+                  letter-spacing: 0.08em;
+                  text-transform: uppercase;
+                  color: var(--choco-400);
+                "
+                >Кількість</span
+              >
+              <span
+                style="
+                  font-size: 0.75rem;
+                  font-weight: 600;
+                  letter-spacing: 0.08em;
+                  text-transform: uppercase;
+                  color: var(--choco-400);
+                "
+                >Од.</span
+              >
+              <span></span>
+            </div>
+          </div>
+          <button class="add-recipe-row" onclick="window.app.addRecipeRow()">
+            ＋ Додати інгредієнт
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn-secondary"
+            onclick="window.app.closeModal('product-modal')"
+          >
+            Скасувати
+          </button>
+          <button class="btn-gold" onclick="window.app.saveProduct()">
+            Зберегти
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ingredient modal -->
+    <div class="modal-overlay" id="ing-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="ing-modal-title">Новий інгредієнт</h3>
+          <button
+            class="modal-close"
+            onclick="window.app.closeModal('ing-modal')"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="field">
+          <label>Назва інгредієнта</label>
+          <input type="text" id="im-name" placeholder="Борошно пшеничне" />
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem">
+          <div class="field">
+            <label>Поточна кількість</label>
+            <input
+              type="number"
+              id="im-qty"
+              placeholder="15"
+              min="0"
+              step="0.01"
+            />
+          </div>
+          <div class="field">
+            <label>Одиниця виміру</label>
+            <select id="im-unit">
+              <option value="кг">кг</option>
+              <option value="г">г</option>
+              <option value="л">л</option>
+              <option value="мл">мл</option>
+              <option value="шт">шт</option>
+              <option value="уп">уп</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Мінімальний поріг (для сповіщення)</label>
+          <input
+            type="number"
+            id="im-min"
+            placeholder="3"
+            min="0"
+            step="0.01"
+          />
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn-secondary"
+            onclick="window.app.closeModal('ing-modal')"
+          >
+            Скасувати
+          </button>
+          <button class="btn-gold" onclick="window.app.saveIngredient()">
+            Зберегти
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Restock modal -->
+    <div class="modal-overlay" id="restock-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>📥 Поповнення складу</h3>
+          <button
+            class="modal-close"
+            onclick="window.app.closeModal('restock-modal')"
+          >
+            ✕
+          </button>
+        </div>
+        <p
+          style="
+            font-size: 0.88rem;
+            color: var(--choco-400);
+            margin-bottom: 1.2rem;
+          "
+        >
+          Внесіть нову партію інгредієнтів від постачальника
+        </p>
+        <div class="field">
+          <label>Інгредієнт</label>
+          <select id="rs-ing"></select>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem">
+          <div class="field">
+            <label>Кількість</label>
+            <input
+              type="number"
+              id="rs-qty"
+              placeholder="10"
+              min="0.01"
+              step="0.01"
+            />
+          </div>
+          <div class="field">
+            <label>Постачальник</label>
+            <input type="text" id="rs-supplier" placeholder="ТОВ Агропостач" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn-secondary"
+            onclick="window.app.closeModal('restock-modal')"
+          >
+            Скасувати
+          </button>
+          <button class="btn-gold" onclick="window.app.saveRestock()">
+            Поповнити
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm day modal -->
+    <div class="modal-overlay" id="confirm-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>✓ Підтвердження виробництва</h3>
+          <button
+            class="modal-close"
+            onclick="window.app.closeModal('confirm-modal')"
+          >
+            ✕
+          </button>
+        </div>
+        <p
+          style="
+            font-size: 0.9rem;
+            color: var(--choco-500);
+            margin-bottom: 1rem;
+          "
+        >
+          Наступні інгредієнти будуть списані зі складу:
+        </p>
+        <ul class="deduction-list" id="deduction-preview"></ul>
+        <div class="divider"></div>
+        <p style="font-size: 0.82rem; color: var(--choco-400)">
+          Після підтвердження залишки складу оновляться автоматично. Цю дію не
+          можна скасувати.
+        </p>
+        <div class="modal-footer">
+          <button
+            class="btn-secondary"
+            onclick="window.app.closeModal('confirm-modal')"
+          >
+            Скасувати
+          </button>
+          <button
+            class="btn-primary"
+            onclick="window.app.applyDayConfirmation()"
+          >
+            Підтвердити та списати
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast"></div>
+
+    <script src="./main.js" type="module"></script>
+  </body>
+</html>
