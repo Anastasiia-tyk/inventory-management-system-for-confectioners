@@ -70,10 +70,9 @@
     git clone [https://github.com/your-username/patissier-system.git](https://github.com/your-username/patissier-system.git)
     ```
 2.  **Підготуйте базу даних:**
-    - Імпортуйте файл `confectionery_schema.sql` у вашу СУБД (MySQL 8.0+ або
-      PostgreSQL).
+    - Імпортуйте файл `schema.sql` у вашу СУБД (MySQL 8.0+ або PostgreSQL).
 3.  **Запустіть інтерфейс:**
-    - Відкрийте файл `confectionery_is.html` у будь-якому сучасному браузері.
+    - Відкрийте файл `index.html` у будь-якому сучасному браузері.
     - _Порада:_ Використовуйте розширення **Live Server** у VS Code для
       миттєвого відображення змін.
 
